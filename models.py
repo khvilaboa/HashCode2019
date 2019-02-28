@@ -31,5 +31,6 @@ class SlideShow:
         for first, second in zip(self.slides[:-1], self.slides[1:]):
             points += first.similitude_with(second)
 
+        return points
 
 
