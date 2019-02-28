@@ -16,14 +16,43 @@ class Handler:
                 match = re.match("(H|V) ([0-9]+) (.*)", line)
                 if match:
                     orientation, num_tags, tags = match.groups()
-                    photo = Photo(ind, tags.split(), orientation is 'H')
+                    photo = Photo(ind, set(tags.split()), orientation is 'H')
                     self.photos.append(photo)
                     ind += 1
-            print(self.photos)
+            #print(self.photos)
 
-    def output(self, filename):
+        self.output("test.txt", self.create_slideshow_bruteforce(self.photos))
+
+    def output(self, filename, slideshow):
         with open(filename, 'w') as f:
-            pass  # TODO: Generate ouptut
+            f.write(str(len(slideshow.slides)) + "\n")
+            for slide in slideshow.slides:
+                f.write(slide.to_output_file() + "\n")
+
+    def create_slideshow_bruteforce(self, photos):
+        slideshow = SlideShow()
+        slide_set = set()
+        for photo in photos:
+            slide_set.add(Slide(photo))
+
+        current_slide = slide_set.pop()
+        slideshow.append(current_slide)
+        while len(slide_set) > 0:
+            best_match = None
+            best_match_points = -1
+            for candidate in slide_set:
+                points = current_slide.interest_factor(candidate)
+                if points > best_match_points:
+                    best_match = candidate
+                    best_match_points = points
+            current_slide = best_match
+            slide_set.remove(best_match)
+
+        return slideshow
+
+
+
+
 
 
 if __name__ == "__main__":

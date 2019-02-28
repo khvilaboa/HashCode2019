@@ -28,10 +28,19 @@ class Slide:
         tags_2_not_1 = other_slide.tags - self.tags
         return min(len(common_tags), len(tags_1_not_2), len(tags_2_not_1))
 
+    def to_output_file(self):
+        if self.photo2 is None:
+            return str(self.photo1.id)
+        else:
+            return str(self.photo1.id) + " " + str(self.photo2.id)
+
 
 class SlideShow:
     def __init__(self):
         self.slides = []
+
+    def append(self, slide):
+        self.slides.append(slide)
 
     def score(self):
         points = 0
@@ -39,5 +48,3 @@ class SlideShow:
             points += first.interest_factor(second)
 
         return points
-
-
