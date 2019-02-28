@@ -10,7 +10,6 @@ class Handler:
         with open(filename, 'r') as f:
             self.num_photos = f.readline()
             ind = 0
-            print(self.num_photos)
 
             for line in f.readlines():
                 match = re.match("(H|V) ([0-9]+) (.*)", line)
@@ -19,7 +18,6 @@ class Handler:
                     photo = Photo(ind, tags.split(), orientation is 'H')
                     self.photos.append(photo)
                     ind += 1
-            print(self.photos)
 
     def output(self, filename):
         with open(filename, 'w') as f:
