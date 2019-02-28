@@ -1,16 +1,24 @@
 
 import argparse
 from models import *
-
+import re
 
 class Handler:
     def __init__(self, filename):
-        # TODO: Initialize structures.
+        self.photos = []
+
         with open(filename, 'r') as f:
-            params = f.readline()
+            self.num_photos = f.readline()
+            ind = 0
+            print(self.num_photos)
 
             for line in f.readlines():
-                pass  # TODO: Instanciate models.
+                match = re.match("(H|V) ([0-9]+) (.*)", line)
+                if match:
+                    orientation, num_tags, tags = match.groups()
+                    photo = Photo(ind, orientation is 'H', tags.split())
+                    self.photos.append(photo)
+                    ind += 1
 
     def output(self, filename):
         with open(filename, 'w') as f:
@@ -28,4 +36,4 @@ if __name__ == "__main__":
 
     handler = Handler(args.input_filename)
     # ...
-    handler.output(args.output_filename)
+    #handler.output(args.output_filename)
