@@ -16,9 +16,10 @@ class Handler:
                 match = re.match("(H|V) ([0-9]+) (.*)", line)
                 if match:
                     orientation, num_tags, tags = match.groups()
-                    photo = Photo(ind, orientation is 'H', tags.split())
+                    photo = Photo(ind, tags.split(), orientation is 'H')
                     self.photos.append(photo)
                     ind += 1
+            print(self.photos)
 
     def output(self, filename):
         with open(filename, 'w') as f:
