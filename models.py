@@ -22,8 +22,8 @@ class Slide:
         else:
             self.tags = photo1.tags | photo2.tags
 
-    def similitude_with(self, other_slide):
-        common_tags  = self.tags + other_slide.tags
+    def interest_factor(self, other_slide):
+        common_tags  = self.tags & other_slide.tags
         tags_1_not_2 = self.tags - other_slide.tags
         tags_2_not_1 = other_slide.tags - self.tags
         return min(len(common_tags), len(tags_1_not_2), len(tags_2_not_1))
@@ -35,11 +35,12 @@ class SlideShow:
 
     def score(self):
         points = 0
+
         for ind in range(len(self.slides) - 1):
             first = self.slides[ind]
             second = self.slides[ind + 1]
 
-            points += first.similitude_with(second)
+            points += first.interest_factor(second)
 
         return points
 
