@@ -70,7 +70,7 @@ class Handler:
         for photo in self.hphotos:
             self.slides.append(Slide(photo))
 
-        self.merge_vertical_slides;
+        self.merge_vertical_slides();
 
     def merge_vertical_slides(self):
         for i in range(self.vphotos):
