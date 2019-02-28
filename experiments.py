@@ -23,6 +23,13 @@ def group_quantities(pairs):
 
     return sorted(c.items(), reverse=True)
 
+def not_useful(handler):
+    c = 0
+    for photo in handler.photos:
+        if photo.horizontal and (photo.tags) == 1:
+            c += 1
+
+    return c
 
 filenames = ["a_example.txt", "b_lovely_landscapes.txt", "c_memorable_moments.txt", "d_pet_pictures.txt", "e_shiny_selfies.txt"]
 
@@ -39,3 +46,10 @@ if __name__ == "__main__":
 
         groups = group_quantities(tag_count)
         print(groups[:100])
+
+        #not_useful_count = len(list(filter(lambda x: x[0] == 1, groups)))
+        print("not useful: %d" % not_useful(handler))
+        print("tags count: %d" % len(tag_count))
+        print("photos count: %d" % len(handler.photos))
+        print("hphotos count: %d" % len(handler.hphotos))
+        print("vphotos count: %d" % len(handler.vphotos))
