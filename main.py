@@ -1,7 +1,8 @@
 
-import argparse
+import argparse, pickle, os
 from models import *
 import re
+import networkx as nx
 
 class Handler:
     def __init__(self, filename):
@@ -9,7 +10,9 @@ class Handler:
         self.hphotos = []
         self.vphotos = []
         self.slides = []
+        self.graph = None
         self.slideshow = None
+        self.filename = filename
 
         with open(filename, 'r') as f:
             self.num_photos = f.readline()
@@ -110,6 +113,28 @@ class Handler:
                 else:
                     break
 
+    def create_graph(self):
+        self.graph = nx.Graph()
+        slides = self.slides.copy()
+
+        # Add nodes
+        self.graph.add_nodes_from(slides)
+
+        # Add edges
+        while len(slides) != 0:
+            slide = slides.pop()
+
+            for cmp_slide in slides:
+                int_fac = slide.interest_factor(cmp_slide)
+                self.graph.add_edge(slide, cmp_slide, weight=int_fac)
+
+        pickle.dump(self.graph, self.filename + ".graph")
+
+    def load_graph(self):
+        if os.path.exists(self.filename + ".graph"):
+            self.graph = pickle.load(self.filename + ".graph")
+        else:
+            self.create_graph()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='HashCode 2019 submission for the online qualification round')
@@ -117,12 +142,16 @@ if __name__ == "__main__":
     parser.add_argument('input_filename', action='store', help='Input file path.')
     parser.add_argument('-o', '--output_filename', action='store', help='Output file pah')
     parser.add_argument('-f', '--function', action='store', default=None, help='Function')
+    parser.add_argument('-g', '--load_graph', action='store_true', help='Create graph')
     # parser.add_argument('-e', '--example', action='store', default = 0, type = int, help='Example 1')
     # parser.add_argument('-b', '--bool_value', action='store_true', help='Example 1')
     args = parser.parse_args()
 
     handler = Handler(args.input_filename)
-    print(handler.hphotos)
+
+    if args.create_graph:
+        handler.create_graph()
+
     if not args.function:
         handler.b_create_slideshow_bruteforce()
     else:
