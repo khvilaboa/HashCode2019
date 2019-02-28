@@ -31,6 +31,9 @@ class Handler:
                     else:
                         self.vphotos.append(photo)
 
+        self.photos_to_slides()
+        self.create_graph()
+
     def output(self, filename):
         if self.slideshow:
             with open(filename, 'w') as f:
@@ -73,10 +76,10 @@ class Handler:
         for photo in self.hphotos:
             self.slides.append(Slide(photo))
 
-        self.merge_vertical_slides();
+        self.merge_vertical_slides()
 
     def merge_vertical_slides(self):
-        for i in range(self.vphotos):
+        for i in range(len(self.vphotos)):
             if i % 2 == 0:
                 self.slides.append(Slide(self.vphotos[i], self.vphotos[i+1]))
 
@@ -128,13 +131,13 @@ class Handler:
                 int_fac = slide.interest_factor(cmp_slide)
                 self.graph.add_edge(slide, cmp_slide, weight=int_fac)
 
-        pickle.dump(self.graph, self.filename + ".graph")
+        #pickle.dump(self.graph, open(self.filename + ".graph", 'wb'))
 
-    def load_graph(self):
-        if os.path.exists(self.filename + ".graph"):
-            self.graph = pickle.load(self.filename + ".graph")
-        else:
-            self.create_graph()
+    #def load_graph(self):
+    #    if os.path.exists(self.filename + ".graph"):
+    #        self.graph = pickle.load(open(self.filename + ".graph", 'rb'))
+    #    else:
+    #        self.create_graph()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='HashCode 2019 submission for the online qualification round')
@@ -148,9 +151,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     handler = Handler(args.input_filename)
-
-    if args.create_graph:
-        handler.create_graph()
 
     if not args.function:
         handler.b_create_slideshow_bruteforce()
