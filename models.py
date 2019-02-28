@@ -23,7 +23,7 @@ class Slide:
             self.tags = photo1.tags | photo2.tags
 
     def interest_factor(self, other_slide):
-        common_tags  = self.tags + other_slide.tags
+        common_tags  = self.tags & other_slide.tags
         tags_1_not_2 = self.tags - other_slide.tags
         tags_2_not_1 = other_slide.tags - self.tags
         return min(len(common_tags), len(tags_1_not_2), len(tags_2_not_1))
