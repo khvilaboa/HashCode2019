@@ -28,7 +28,7 @@ class SlideShow:
 
     def score(self):
         points = 0
-        for first, second in zip(self.slides[:-1], self.slides[1:])
+        for first, second in zip(self.slides[:-1], self.slides[1:]):
             points += first.similitude_with(second)
 
 
