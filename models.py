@@ -24,9 +24,10 @@ class Slide:
 
     def interest_factor(self, other_slide):
         common_tags  = self.tags & other_slide.tags
-        tags_1_not_2 = self.tags - other_slide.tags
-        tags_2_not_1 = other_slide.tags - self.tags
-        return min(len(common_tags), len(tags_1_not_2), len(tags_2_not_1))
+        common_score = len(common_tags)
+        first_score  = len(self.tags) - common_score
+        second_score = len(other_slide.tags) - common_score
+        return min(common_score, first_score, second_score)
 
     def to_output_file(self):
         if self.photo2 is None:

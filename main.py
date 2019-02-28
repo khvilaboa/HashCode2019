@@ -19,7 +19,7 @@ class Handler:
                     self.photos.append(photo)
                     ind += 1
 
-        self.output("test.txt", self.create_slideshow_bruteforce(self.photos))
+        self.output("test.txt", self.b_create_slideshow_bruteforce(self.photos))
 
     def output(self, filename, slideshow):
         with open(filename, 'w') as f:
@@ -27,7 +27,7 @@ class Handler:
             for slide in slideshow.slides:
                 f.write(slide.to_output_file() + "\n")
 
-    def create_slideshow_bruteforce(self, photos):
+    def b_create_slideshow_bruteforce(self, photos):
         slideshow = SlideShow()
         slide_set = set()
         for photo in photos:
@@ -35,8 +35,9 @@ class Handler:
 
         current_slide = slide_set.pop()
         slideshow.append(current_slide)
+        i = 0
         while len(slide_set) > 0:
-            best_match = None
+            best_match = None   
             best_match_points = -1
             for candidate in slide_set:
                 points = current_slide.interest_factor(candidate)
@@ -45,6 +46,10 @@ class Handler:
                     best_match_points = points
             current_slide = best_match
             slide_set.remove(best_match)
+            slideshow.append(best_match)
+            i += 1
+            if i % 100 == 0:
+                print(i)
 
         return slideshow
 
