@@ -6,6 +6,9 @@ import re
 class Handler:
     def __init__(self, filename):
         self.photos = []
+        self.hphotos = []
+        self.vphotos = []
+        self.slideshow = None
 
         with open(filename, 'r') as f:
             self.num_photos = f.readline()
@@ -19,20 +22,29 @@ class Handler:
                     self.photos.append(photo)
                     ind += 1
 
-        self.output("test.txt", self.b_create_slideshow_bruteforce(self.photos))
+                    if orientation is 'H':
+                        self.hphotos.append(photo)
+                    else:
+                        self.vphotos.append(photo)
 
-    def output(self, filename, slideshow):
-        with open(filename, 'w') as f:
-            f.write(str(len(slideshow.slides)) + "\n")
-            for slide in slideshow.slides:
-                f.write(slide.to_output_file() + "\n")
+    def output(self, filename):
+        if self.slideshow:
+            with open(filename, 'w') as f:
+                f.write(str(len(self.slideshow.slides)) + "\n")
+                for slide in self.slideshow.slides:
+                    f.write(slide.to_output_file() + "\n")
 
-    def b_create_slideshow_bruteforce(self, photos):
-        slideshow = SlideShow()
+    def b_create_slideshow_bruteforce(self):
         slide_set = set()
-        for photo in photos:
+        for photo in self.photos:
             slide_set.add(Slide(photo))
+        return self.create_slideshow_bruteforce(slide_set)
 
+    def generic_create_slideshow_bruteforce(self):
+        return self.create_slideshow_bruteforce({Slide(photo) for photo in self.hphotos})
+
+    def create_slideshow_bruteforce(self, slide_set):
+        slideshow = SlideShow()
         current_slide = slide_set.pop()
         slideshow.append(current_slide)
         i = 0
@@ -51,22 +63,27 @@ class Handler:
             if i % 100 == 0:
                 print(i)
 
-        return slideshow
-
-
-
-
-
+        self.slideshow = slideshow
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='HashCode 2019 submission for the online qualification round')
 
     parser.add_argument('input_filename', action='store', help='Input file path.')
     parser.add_argument('-o', '--output_filename', action='store', help='Output file pah')
+    parser.add_argument('-f', '--function', action='store', default=None, help='Function')
     # parser.add_argument('-e', '--example', action='store', default = 0, type = int, help='Example 1')
     # parser.add_argument('-b', '--bool_value', action='store_true', help='Example 1')
     args = parser.parse_args()
 
     handler = Handler(args.input_filename)
+    print(handler.hphotos)
+    if not args.function:
+        handler.b_create_slideshow_bruteforce()
+    else:
+        print("Executing %s..." % args.function)
+        getattr(handler, args.function)()
+
+    handler.output("test.txt")
+
     # ...
     #handler.output(args.output_filename)

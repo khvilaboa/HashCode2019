@@ -49,3 +49,7 @@ if __name__ == "__main__":
 
         #not_useful_count = len(list(filter(lambda x: x[0] == 1, groups)))
         print("not useful: %d" % not_useful(handler))
+        print("tags count: %d" % len(tag_count))
+        print("photos count: %d" % len(handler.photos))
+        print("hphotos count: %d" % len(handler.hphotos))
+        print("vphotos count: %d" % len(handler.vphotos))
