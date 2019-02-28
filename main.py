@@ -8,6 +8,7 @@ class Handler:
         self.photos = []
         self.hphotos = []
         self.vphotos = []
+        self.slides = []
         self.slideshow = None
 
         with open(filename, 'r') as f:
@@ -64,6 +65,51 @@ class Handler:
                 print(i)
 
         self.slideshow = slideshow
+
+    def photos_to_slides(self):
+        for photo in self.hphotos:
+            self.slides.append(Slide(photo))
+
+        self.merge_vertical_slides;
+
+    def merge_vertical_slides(self):
+        for i in range(self.vphotos):
+            if i % 2 == 0:
+                self.slides.append(Slide(self.vphotos[i], self.vphotos[i+1]))
+
+    def create_slideshow_from_graph(self):
+        self.slideshow  = SlideShow()
+        visited = {}
+        for node in self.graph:
+            visited[node] = False
+            
+        for node in self.graph:
+            if visited[node]:
+                continue
+
+            current_node = node
+            self.slideshow.append(current_node)
+            visited[current_node] = True
+
+            while True:
+                best_score = -1;
+                candidate = None
+                for neighbor in self.graph[current_node]:
+                    if visited[neighbor]:
+                        continue
+
+                    score = self.graph.edges[current_node, neighbor]['weight']
+                    if score > best_score:
+                        best_score = score
+                        candidate = neighbor
+
+                if candidate is not None:
+                    current_node = candidate
+                    self.slideshow.append(candidate)
+                    visited[candidate] = True
+                else:
+                    break
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='HashCode 2019 submission for the online qualification round')
